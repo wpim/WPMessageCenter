@@ -7,8 +7,9 @@
 //
 
 #import "WPViewController.h"
+#import <WPMessageCenter/WPMessageCenter.h>
 
-@interface WPViewController ()
+@interface WPViewController ()<WPMessageObserver>
 
 @end
 
@@ -17,7 +18,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	
+    WPMessageCenter *center = [WPMessageCenter sharedCenter];
+    [center addObserver:self];
+    [center connect];
 }
 
 - (void)didReceiveMemoryWarning
@@ -26,4 +30,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - WPMessageObserver
+- (void)didConnectServer {
+    WPTextMessage *msg = [[WPTextMessage alloc] init];
+    msg.text = @"123";
+    [[WPMessageCenter sharedCenter] sendMessage:msg];
+}
+
+- (void)didCloseServer {
+    
+}
+
+- (void)didReceiveMessage:(WPMessage *)message {
+    
+}
 @end

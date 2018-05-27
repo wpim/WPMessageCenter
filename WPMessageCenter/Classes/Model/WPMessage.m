@@ -9,12 +9,12 @@
 #import <YYModel/YYModel.h>
 
 @implementation WPMessage
-- (NSData *)messageData {
-    return [NSKeyedArchiver archivedDataWithRootObject:self];
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-    [self yy_modelEncodeWithCoder:aCoder];
+#pragma mark - init
+- (instancetype)init {
+    if (self = [super init]) {
+        _timestamp = [[NSDate date] timeIntervalSince1970];
+    }
+    return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -23,4 +23,15 @@
     }
     return self;
 }
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [self yy_modelEncodeWithCoder:aCoder];
+}
+
+#pragma mark - public
+- (NSData *)messageData {
+    NSData *json = [self yy_modelToJSONData];
+    return json;
+}
+
 @end

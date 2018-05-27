@@ -12,9 +12,19 @@
 @protocol WPMessageObserver <NSObject>
 
 /**
+ 连接上服务器的回调
+ */
+- (void)didConnectServer;
+
+/**
+ 关闭WebSocket服务器连接
+ */
+- (void)didCloseServer;
+
+/**
  收到消息时的回调
  @param observer 观察者对象
  @param message 收到的消息
  */
-- (void)messageObserver:(id<WPMessageObserver>)observer didReceiveMessage:(WPMessage *)message;
+- (void)didReceiveMessage:(WPMessage *)message;
 @end

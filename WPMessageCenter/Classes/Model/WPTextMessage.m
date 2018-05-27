@@ -8,5 +8,10 @@
 #import "WPTextMessage.h"
 
 @implementation WPTextMessage
-
+- (instancetype)init {
+    if (self = [super init]) {
+        self.type = WPMessageTypeText;
+    }
+    return self;
+}
 @end

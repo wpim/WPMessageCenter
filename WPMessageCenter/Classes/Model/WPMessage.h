@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, WPMessageType) {
 
 @interface WPMessage : NSObject<NSCoding>
 @property (nonatomic, copy) NSString *ID;
-@property (nonatomic, assign) NSTimeInterval timestamp;
+@property (nonatomic, assign, readonly) NSTimeInterval timestamp;
 @property (nonatomic, assign) WPMessageType type;
 
 /**

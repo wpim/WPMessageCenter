@@ -9,9 +9,9 @@
 #import <SocketRocket/SocketRocket.h>
 #import <WPEnvCenter/WPEnvCenter.h>
 
-@interface WPMessageCenter()
+@interface WPMessageCenter()<SRWebSocketDelegate>
 @property (nonatomic, strong) SRWebSocket *socket;
-@property (nonatomic, strong) NSMutableArray<id<WPMessageObserver>> *observers;
+@property (nonatomic, strong) NSMutableArray<id<WPMessageObserver>> *observerPool;
 @end
 
 @implementation WPMessageCenter
@@ -28,18 +28,20 @@ static WPMessageCenter *_instance;
 #pragma mark - 懒加载
 - (SRWebSocket *)socket {
     if (!_socket) {
-        NSString *url = [WPEnvCenter sharedCenter].currentConfig.socketUrl;
-        _socket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:url]];
+        NSString *url = [NSString stringWithFormat:@"%@?token=666", [WPEnvCenter sharedCenter].currentConfig.socketUrl];
+        SRWebSocket *socket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:url]];
+        socket.delegate = self;
+        _socket = socket;
     }
     return _socket;
 }
-
-- (NSMutableArray<id<WPMessageObserver>> *)observers {
-    if (!_observers) {
-        _observers = [NSMutableArray array];
+- (NSMutableArray<id<WPMessageObserver>> *)observerPool {
+    if (!_observerPool) {
+        _observerPool = [NSMutableArray array];
     }
-    return _observers;
+    return _observerPool;
 }
+
 #pragma mark - public
 + (instancetype)sharedCenter {
     if (!_instance) {
@@ -49,14 +51,31 @@ static WPMessageCenter *_instance;
 }
 
 - (void)connect {
-    [self.socket open];
+    SRReadyState state = self.socket.readyState;
+    
+    // 如果连接已经关闭或正在关闭，尝试连接WebSocket服务器
+    if (SR_OPEN != state) {
+        [self.socket open];
+    }
 }
 
 - (void)close {
-    [self.socket close];
+    SRReadyState state = self.socket.readyState;
+    
+    // 如果连接打开或正在连接，尝试断开连接
+    if (SR_OPEN == state || SR_CONNECTING ) {
+        [self.socket close];
+    }
 }
 
 - (void)sendMessage:(WPMessage *)message {
+    SRReadyState state = self.socket.readyState;
+    
+    // 如果处于断开状态，连接服务器后再试
+    if (SR_CLOSED == state || SR_CLOSING == state) {
+        [self connect];
+    }
+    
     [self.socket send:message.messageData];
 }
 
@@ -70,15 +89,46 @@ static WPMessageCenter *_instance;
     if (![observer conformsToProtocol:@protocol(WPMessageObserver)]) {
         return;
     }
+    
+    [self.observerPool addObject:observer];
 }
 
 - (void)removeObserver:(id<WPMessageObserver>)observer {
-    if ([self.observers containsObject:observer]) {
-        [self.observers removeObject:observer];
+    if ([self.observerPool containsObject:observer]) {
+        [self.observerPool removeObject:observer];
     }
 }
 
 - (void)removeAllObserver {
-    [self.observers removeAllObjects];
+    [self.observerPool removeAllObjects];
 }
+
+#pragma mark - SRWebSocketDelegate
+- (void)webSocketDidOpen:(SRWebSocket *)webSocket {
+    for (id<WPMessageObserver> observer in self.observerPool) {
+        if ([observer respondsToSelector:@selector(didConnectServer)]) {
+            [observer didConnectServer];
+        }
+    }
+}
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
+    
+}
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
+    
+}
+- (void)webSocket:(SRWebSocket *)webSocket didReceivePong:(NSData *)pongPayload {
+    
+}
+
+// Return YES to convert messages sent as Text to an NSString. Return NO to skip NSData -> NSString conversion for Text messages. Defaults to YES.
+- (BOOL)webSocketShouldConvertTextFrameToString:(SRWebSocket *)webSocket {
+    return YES;
+}
+
+- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
+    
+}
+
+
 @end

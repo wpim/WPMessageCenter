@@ -8,5 +8,10 @@
 #import "WPImageMessage.h"
 
 @implementation WPImageMessage
-
+- (instancetype)init {
+    if (self = [super init]) {
+        self.type = WPMessageTypeImage;
+    }
+    return self;
+}
 @end
