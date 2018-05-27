@@ -1,0 +1,14 @@
+# 源
+source 'https://github.com/wpim/spec.git'
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'WPMessageCenter_Example' do
+  pod 'WPMessageCenter', :path => '../'
+  pod 'WPEnvCenter', :git=>'https://github.com/wpim/WPEnvCenter.git'
+
+  target 'WPMessageCenter_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
