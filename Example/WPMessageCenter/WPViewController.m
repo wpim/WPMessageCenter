@@ -19,9 +19,16 @@
 {
     [super viewDidLoad];
 	
+    [WPMessageCenter setupSocketWithParams:@{
+                                             @"name": @"123"
+                                             }];
     WPMessageCenter *center = [WPMessageCenter sharedCenter];
     [center addObserver:self];
     [center connect];
+    
+    WPTextMessage *msg = [[WPTextMessage alloc] init];
+    msg.text = @"123";
+    [[WPMessageCenter sharedCenter] sendMessage:msg];
 }
 
 - (void)didReceiveMemoryWarning
@@ -32,9 +39,7 @@
 
 #pragma mark - WPMessageObserver
 - (void)didConnectServer {
-    WPTextMessage *msg = [[WPTextMessage alloc] init];
-    msg.text = @"123";
-    [[WPMessageCenter sharedCenter] sendMessage:msg];
+    
 }
 
 - (void)didCloseServer {

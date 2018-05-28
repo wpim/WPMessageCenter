@@ -19,6 +19,11 @@
  */
 + (instancetype)sharedCenter;
 
+/**
+ 消息通道初始化方法
+ @param params 初始化参数，这些参数将会以【key=value】的形式带在WebSocket链接后面，参数一般都是身份信息、签名信息等。SDK有一个默认参数【im_token】，请勿覆盖
+ */
++ (void)setupSocketWithParams:(NSDictionary<NSString*, NSString*> *)params;
 
 /**
  连接WebSocket服务器
