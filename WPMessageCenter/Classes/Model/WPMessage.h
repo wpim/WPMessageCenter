@@ -6,17 +6,15 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef NS_ENUM(NSInteger, WPMessageType) {
-    WPMessageTypeUnknown,
-    WPMessageTypeText,
-    WPMessageTypeImage
-};
+#import "WPMessageType.h"
 
 @interface WPMessage : NSObject<NSCoding>
 @property (nonatomic, copy) NSString *ID;
-@property (nonatomic, assign, readonly) NSTimeInterval timestamp;
+@property (nonatomic, assign) NSTimeInterval timestamp;
 @property (nonatomic, assign) WPMessageType type;
+
+- (instancetype)initWithDate:(NSDate *)date;
+- (instancetype)initWithDateNow;
 
 /**
  消息对象转二进制数据

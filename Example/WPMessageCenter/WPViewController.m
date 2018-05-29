@@ -26,9 +26,7 @@
     [center addObserver:self];
     [center connect];
     
-    WPTextMessage *msg = [[WPTextMessage alloc] init];
-    msg.text = @"123";
-    [[WPMessageCenter sharedCenter] sendMessage:msg];
+    [[WPMessageCenter sharedCenter] sendText:@"123"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -47,6 +45,7 @@
 }
 
 - (void)didReceiveMessage:(WPMessage *)message {
-    
+    NSLog(@"%@", message);
+    [[WPMessageCenter sharedCenter] sendText:@"234"];
 }
 @end

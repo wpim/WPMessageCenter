@@ -10,7 +10,14 @@
 
 @implementation WPMessage
 #pragma mark - init
-- (instancetype)init {
+- (instancetype)initWithDate:(NSDate *)date {
+    if (self = [super init]) {
+        _timestamp = [date timeIntervalSince1970];
+    }
+    return self;
+}
+
+- (instancetype)initWithDateNow {
     if (self = [super init]) {
         _timestamp = [[NSDate date] timeIntervalSince1970];
     }
@@ -28,6 +35,15 @@
     [self yy_modelEncodeWithCoder:aCoder];
 }
 
++ (NSDictionary *)modelCustomPropertyMapper {
+    return @{
+             @"ID" : @"id"
+             };
+}
+
+- (NSString *)description {
+    return [self yy_modelDescription];
+}
 #pragma mark - public
 - (NSData *)messageData {
     NSData *json = [self yy_modelToJSONData];

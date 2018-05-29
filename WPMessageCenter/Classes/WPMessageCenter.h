@@ -7,12 +7,10 @@
 
 #import <Foundation/Foundation.h>
 #import "WPMessageObserver.h"
-#import "WPMessage.h"
-#import "WPTextMessage.h"
-#import "WPImageMessage.h"
+#import "WPMessageType.h"
 
 @interface WPMessageCenter : NSObject
-
+#pragma mark - 单例、初始化
 /**
  获取单例
  @return 单例对象
@@ -25,6 +23,7 @@
  */
 + (void)setupSocketWithParams:(NSDictionary<NSString*, NSString*> *)params;
 
+#pragma mark - 连接消息服务器
 /**
  连接WebSocket服务器
  */
@@ -35,12 +34,7 @@
  */
 - (void)close;
 
-/**
- 向WebSocket服务器发送消息
- @param message 消息对象
- */
-- (void)sendMessage:(nonnull WPMessage *)message;
-
+#pragma mark - 消息监听
 /**
  添加消息观察者，可以监听消息的到达，可以添加多个。观察者对象会被强引用，所以需要注意在不需要的时候手动移除
  @param observer 观察者对象
@@ -57,4 +51,23 @@
  移除所有观察者
  */
 - (void)removeAllObserver;
+
+#pragma mark - 发送消息
+/**
+ 发送文本消息
+ @param text 文本消息内容
+ */
+- (void)sendText:(NSString *)text;
+//
+///**
+// 发送二进制图片消息
+// @param image 二进制图片
+// */
+//- (void)sendImageData:(NSData *)image;
+//
+///**
+// 发送图片链接
+// @param imageUrl 图片链接
+// */
+//- (void)sendImageURL:(NSString *)imageUrl;
 @end
