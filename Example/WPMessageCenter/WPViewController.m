@@ -44,7 +44,7 @@
     
 }
 
-- (void)didReceiveMessage:(WPMessage *)message {
+- (void)didReceiveMessage:(WPMessageEntity *)message {
     NSLog(@"%@", message);
     [[WPMessageCenter sharedCenter] sendText:@"234" toUid:@"344"];
 }

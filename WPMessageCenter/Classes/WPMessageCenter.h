@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "WPMessageObserver.h"
 #import "WPMessageType.h"
+#import "WPMessageEntity.h"
 
 @interface WPMessageCenter : NSObject
 #pragma mark - 单例、初始化

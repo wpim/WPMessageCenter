@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class WPMessage;
+@class WPMessageEntity;
 
 @protocol WPMessageObserver <NSObject>
 
@@ -23,8 +23,7 @@
 
 /**
  收到消息时的回调
- @param observer 观察者对象
  @param message 收到的消息
  */
-- (void)didReceiveMessage:(WPMessage *)message;
+- (void)didReceiveMessage:(WPMessageEntity *)message;
 @end

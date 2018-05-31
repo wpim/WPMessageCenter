@@ -9,10 +9,7 @@
 #import <SocketRocket/SocketRocket.h>
 #import <WPEnvCenter/WPEnvCenter.h>
 #import <YYModel/YYModel.h>
-#import "WPMessage.h"
-#import "WPTextMessage.h"
-#import "WPImageMessage.h"
-
+#import "WPMessageEntity.h"
 
 @interface WPMessageCenter()<SRWebSocketDelegate>
 @property (nonatomic, strong) SRWebSocket *socket;
@@ -23,7 +20,7 @@
 
 @property (nonatomic, strong) NSMutableArray<id<WPMessageObserver>> *observerPool;
 
-@property (nonatomic, strong) NSMutableArray<WPMessage *> *buffer;
+@property (nonatomic, strong) NSMutableArray<WPMessageEntity *> *buffer;
 @property (nonatomic, strong) NSTimer *bufferTimer;
 @property (nonatomic, strong) NSLock *bufferLock;
 @end
@@ -47,7 +44,7 @@ static WPMessageCenter *_instance;
     return _observerPool;
 }
 
-- (NSMutableArray<WPMessage *> *)buffer {
+- (NSMutableArray<WPMessageEntity *> *)buffer {
     if (!_buffer) {
         _buffer = [NSMutableArray array];
     }
@@ -73,7 +70,7 @@ static WPMessageCenter *_instance;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [weakSelf.bufferLock lock];
         
-        [weakSelf.buffer enumerateObjectsUsingBlock:^(WPMessage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        [weakSelf.buffer enumerateObjectsUsingBlock:^(WPMessageEntity * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             [weakSelf sendMessage:obj fromBuffer:YES];
             [weakSelf.buffer removeObject:obj];
         }];
@@ -82,9 +79,9 @@ static WPMessageCenter *_instance;
     });
 }
 
-- (void)sendMessage:(WPMessage *)message fromBuffer:(BOOL)isFromBuffer {
+- (void)sendMessage:(WPMessageEntity *)message fromBuffer:(BOOL)isFromBuffer {
     // 判空
-    if (!message || ![message isKindOfClass:WPMessage.class]) {
+    if (!message || ![message isKindOfClass:WPMessageEntity.class]) {
         return;
     }
     
@@ -207,7 +204,7 @@ static WPMessageCenter *_instance;
         return;
     }
     
-    WPTextMessage *msg = [[WPTextMessage alloc] initWithDateNow];
+    WPMessageEntity *msg = [[WPMessageEntity alloc] initWithDateNow];
     msg.text = text;
     msg.toUid = uid;
     msg.ownerUid = self.ownerUid;
@@ -253,7 +250,7 @@ static WPMessageCenter *_instance;
 }
 
 - (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(id)message {
-    WPMessage *msg = [WPMessage yy_modelWithJSON:message];
+    WPMessageEntity *msg = [WPMessageEntity yy_modelWithJSON:message];
     if (!msg) {
         return;
     }

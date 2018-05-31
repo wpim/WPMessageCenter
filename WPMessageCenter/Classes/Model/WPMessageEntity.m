@@ -5,10 +5,10 @@
 //  Created by 甘文鹏 on 2018/5/27.
 //
 
-#import "WPMessage.h"
+#import "WPMessageEntity.h"
 #import <YYModel/YYModel.h>
 
-@implementation WPMessage
+@implementation WPMessageEntity
 #pragma mark - init
 - (instancetype)initWithDate:(NSDate *)date {
     if (self = [super init]) {

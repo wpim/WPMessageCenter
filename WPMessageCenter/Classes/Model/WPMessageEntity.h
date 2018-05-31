@@ -1,5 +1,5 @@
 //
-//  WPMessage.h
+//  WPMessageEntity.h
 //  WPMessageCenter
 //
 //  Created by 甘文鹏 on 2018/5/27.
@@ -8,7 +8,8 @@
 #import <Foundation/Foundation.h>
 #import "WPMessageType.h"
 
-@interface WPMessage : NSObject<NSCoding>
+@interface WPMessageEntity : NSObject<NSCoding>
+/// ===================== Base =======================
 /// 消息ID
 @property (nonatomic, copy)     NSString        *ID;
 /// 消息创建时间戳
@@ -19,6 +20,10 @@
 @property (nonatomic, copy)     NSString        *ownerUid;
 /// 消息接受者ID
 @property (nonatomic, copy)     NSString        *toUid;
+
+/// ===================== Text =======================
+@property (nonatomic, copy) NSString *text;
+
 
 - (instancetype)initWithDate:(NSDate *)date;
 - (instancetype)initWithDateNow;
