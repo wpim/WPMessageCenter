@@ -9,9 +9,16 @@
 #import "WPMessageType.h"
 
 @interface WPMessage : NSObject<NSCoding>
-@property (nonatomic, copy) NSString *ID;
-@property (nonatomic, assign) NSTimeInterval timestamp;
-@property (nonatomic, assign) WPMessageType type;
+/// 消息ID
+@property (nonatomic, copy)     NSString        *ID;
+/// 消息创建时间戳
+@property (nonatomic, assign)   NSTimeInterval  timestamp;
+/// 消息类型
+@property (nonatomic, assign)   WPMessageType   type;
+/// 消息所有者ID
+@property (nonatomic, copy)     NSString        *ownerUid;
+/// 消息接受者ID
+@property (nonatomic, copy)     NSString        *toUid;
 
 - (instancetype)initWithDate:(NSDate *)date;
 - (instancetype)initWithDateNow;

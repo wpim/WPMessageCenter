@@ -18,15 +18,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor blueColor];
 	
-    [WPMessageCenter setupSocketWithParams:@{
-                                             @"name": @"123"
-                                             }];
+    [WPMessageCenter setupSocketWithUid:@"123" params:nil];
     WPMessageCenter *center = [WPMessageCenter sharedCenter];
     [center addObserver:self];
     [center connect];
     
-    [[WPMessageCenter sharedCenter] sendText:@"123"];
+    [[WPMessageCenter sharedCenter] sendText:@"123" toUid:@"456"];
 }
 
 - (void)didReceiveMemoryWarning
@@ -46,6 +46,6 @@
 
 - (void)didReceiveMessage:(WPMessage *)message {
     NSLog(@"%@", message);
-    [[WPMessageCenter sharedCenter] sendText:@"234"];
+    [[WPMessageCenter sharedCenter] sendText:@"234" toUid:@"344"];
 }
 @end

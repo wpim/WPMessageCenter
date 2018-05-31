@@ -19,6 +19,8 @@
 @property (nonatomic, strong) NSTimer *connectTimer;
 @property (nonatomic, strong) NSDictionary<NSString*, NSString*> *socketParams;
 
+@property (nonatomic, copy)   NSString *ownerUid;
+
 @property (nonatomic, strong) NSMutableArray<id<WPMessageObserver>> *observerPool;
 
 @property (nonatomic, strong) NSMutableArray<WPMessage *> *buffer;
@@ -52,12 +54,12 @@ static WPMessageCenter *_instance;
     return _buffer;
 }
 
-- (NSDictionary<NSString *,NSString *> *)socketParams {
-    if (!_socketParams) {
-        _socketParams = @{@"im_token" : [self getImToken]};
-    }
-    return _socketParams;
-}
+//- (NSDictionary<NSString *,NSString *> *)socketParams {
+//    if (!_socketParams) {
+//        _socketParams = @{@"im_token" : [self getImToken]};
+//    }
+//    return _socketParams;
+//}
 
 - (NSLock *)bufferLock {
     if (!_bufferLock) {
@@ -102,32 +104,6 @@ static WPMessageCenter *_instance;
     }
 }
 
-- (NSString *)getImToken {
-    static NSString *KEY_IM_TOKEN = @"KEY_IM_TOKEN";
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    // 从缓存中取
-    NSString *cahche = [defaults stringForKey:KEY_IM_TOKEN];
-    if (cahche.length > 0) {
-        return cahche;
-    }
-    
-    // 缓存中没有，生成16位随机串作为im_token
-    static NSString *chars = @"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    NSInteger len = chars.length;
-    NSMutableString *token = [NSMutableString string];
-    for (int i=0; i<16; i++) {
-        NSString *item = [chars substringWithRange:NSMakeRange((NSInteger)arc4random_uniform((uint32_t)len), 1)];
-        [token appendString:item];
-    }
-    
-    // 新生成的字符串存沙盒
-    [defaults setObject:token forKey:KEY_IM_TOKEN];
-    [defaults synchronize];
-    
-    return token;
-}
-
 #pragma mark - public
 + (instancetype)sharedCenter {
     if (!_instance) {
@@ -136,15 +112,12 @@ static WPMessageCenter *_instance;
     return _instance;
 }
 
-+ (void)setupSocketWithParams:(NSDictionary<NSString *,NSString *> *)params {
-    if (!params || params.count==0) {
-        return;
-    }
-    
++ (void)setupSocketWithUid:(NSString *)uid params:(NSDictionary<NSString *,NSString *> *)params {
     WPMessageCenter *instance = [self sharedCenter];
+    instance.ownerUid = uid;
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:params];
-    dict[@"im_token"] = [instance getImToken];
+    dict[@"im_token"] = uid;
     
     instance.socketParams = [dict copy];
 }
@@ -229,13 +202,15 @@ static WPMessageCenter *_instance;
 }
 
 #pragma mark 发送消息
-- (void)sendText:(NSString *)text {
+- (void)sendText:(NSString *)text toUid:(NSString *)uid{
     if (text==nil || text.length==0) {
         return;
     }
     
     WPTextMessage *msg = [[WPTextMessage alloc] initWithDateNow];
     msg.text = text;
+    msg.toUid = uid;
+    msg.ownerUid = self.ownerUid;
     [self sendMessage:msg fromBuffer:NO];
 }
 

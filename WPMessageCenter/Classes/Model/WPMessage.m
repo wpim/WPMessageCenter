@@ -18,7 +18,7 @@
 }
 
 - (instancetype)initWithDateNow {
-    if (self = [super init]) {
+    if (self = [self init]) {
         _timestamp = [[NSDate date] timeIntervalSince1970];
     }
     return self;
@@ -37,7 +37,9 @@
 
 + (NSDictionary *)modelCustomPropertyMapper {
     return @{
-             @"ID" : @"id"
+             @"ID" : @"id",
+             @"ownerUid" : @"owner_uid",
+             @"toUid" : @"to_uid"
              };
 }
 

@@ -14,4 +14,18 @@
     }
     return self;
 }
+
+- (instancetype)initWithDate:(NSDate *)date {
+    if (self = [super initWithDate:date]) {
+        self.type = WPMessageTypeText;
+    }
+    return self;
+}
+
+-(instancetype)initWithDateNow {
+    if (self = [super initWithDateNow]) {
+        self.type = WPMessageTypeText;
+    }
+    return self;
+}
 @end

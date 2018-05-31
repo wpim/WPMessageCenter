@@ -19,9 +19,11 @@
 
 /**
  消息通道初始化方法
+
+ @param uid 用户ID，这个是IM的用户ID，跟用户系统的ID不是一个，不耦合
  @param params 初始化参数，这些参数将会以【key=value】的形式带在WebSocket链接后面，参数一般都是身份信息、签名信息等。SDK有一个默认参数【im_token】，请勿覆盖
  */
-+ (void)setupSocketWithParams:(NSDictionary<NSString*, NSString*> *)params;
++ (void)setupSocketWithUid:(NSString *)uid params:(NSDictionary<NSString*, NSString*> *)params;
 
 #pragma mark - 连接消息服务器
 /**
@@ -57,7 +59,7 @@
  发送文本消息
  @param text 文本消息内容
  */
-- (void)sendText:(NSString *)text;
+- (void)sendText:(NSString *)text toUid:(NSString *)uid;
 //
 ///**
 // 发送二进制图片消息
